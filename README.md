@@ -1,63 +1,81 @@
-# RNN Modelo de prediccion de emociones
+# 🧠 RNN – Modelo de Predicción de Emociones
 
-## 1. Introducción  
-En este proyecto se implementa un modelo de inteligencia artificial previamente entrenado y empaquetado en un archivo (`model.pkl`).  
-El objetivo es exponerlo mediante un backend en **Django** y permitir la interacción con un **frontend web simple (HTML, CSS y JavaScript con Bootstrap)**.  
-Finalmente, toda la aplicación se **dockeriza** para facilitar su despliegue en un VPS.  
+## 1. Introducción
 
----
-
-## 2. Arquitectura de la solución  
-
-- **Backend (Django)**  
-  - Carga el modelo serializado en memoria.  
-  - Expone un endpoint `/predict/` que recibe los datos enviados por el frontend.  
-  - Devuelve la predicción en formato JSON.  
-  - Provee la vista `/ui/` que renderiza un formulario web para interactuar con el modelo.  
-
-- **Frontend (HTML + CSS + JS + Bootstrap)**  
-  - Formulario web para ingresar los valores de entrada del modelo.  
-  - Estilizado con Bootstrap para mejorar la experiencia visual.  
-  - Uso de JavaScript (fetch API) para enviar datos al backend sin recargar la página y mostrar el resultado dinámicamente.  
-
-- **Infraestructura (Docker)**  
-  - Aplicación contenida en una imagen Docker basada en Python.  
-  - El contenedor incluye Django y las dependencias necesarias.  
-  - Listo para desplegar en cualquier VPS (ej. DigitalOcean, AWS, Azure, GCP).  
+En este proyecto se implementa un modelo de inteligencia artificial previamente entrenado y empaquetado en un archivo (`model.pkl`).
+El objetivo es exponerlo mediante un backend en **Flask** y permitir la interacción con un **frontend web simple (HTML, CSS y JavaScript con Bootstrap)**.
+Finalmente, toda la aplicación se **dockeriza** para facilitar su despliegue en un VPS o entorno en la nube.
 
 ---
 
-## 3. Flujo de funcionamiento  
+## 2. Arquitectura de la solución
 
-1. El usuario accede a la interfaz web en la ruta `/ui/`.  
-2. Completa el formulario con los valores de entrada del modelo.  
-3. Al enviar, se ejecuta un request AJAX hacia `/predict/`.  
-4. El backend recibe los datos, ejecuta la predicción y responde en formato JSON.  
-5. El frontend muestra la predicción en pantalla en un bloque dinámico.  
+* **Backend (Flask)**
 
----
+  * Carga el modelo serializado (`model.pkl`) en memoria al iniciar el servidor.
+  * Expone una ruta raíz (`/`) que renderiza una página HTML con un formulario.
+  * Procesa las solicitudes `POST` provenientes del frontend, ejecuta la predicción y devuelve el resultado renderizado en la misma interfaz.
+  * Puede extenderse fácilmente para exponer un endpoint `/predict` que devuelva las predicciones en formato JSON si se desea interoperabilidad con otros clientes.
 
-## 4. Dockerización  
+* **Frontend (HTML + CSS + JS + Bootstrap)**
 
-El proyecto incluye:  
-- Un **Dockerfile** para construir la imagen de la aplicación.  
-- Un **requirements.txt** con las dependencias necesarias (Django, librerías de machine learning, etc.).  
-- Un **docker-compose.yml** que permite levantar fácilmente el contenedor y mapear los puertos hacia el VPS.  
+  * Página web con un formulario que permite ingresar los datos de entrada para el modelo.
+  * Interfaz estilizada con Bootstrap para lograr una experiencia moderna y limpia.
+  * Uso de JavaScript opcional (fetch API o formulario tradicional) para enviar los datos al backend y mostrar el resultado dinámicamente.
 
----
+* **Infraestructura (Docker)**
 
-## 5. Despliegue en VPS  
-
-1. Copiar el proyecto y el archivo del modelo al servidor.  
-2. Construir la imagen con Docker Compose.  
-3. Levantar el contenedor en segundo plano.  
-4. Acceder desde el navegador a la dirección del servidor en el puerto expuesto (ej. `http://<IP_DEL_VPS>:8000/ui/`).  
+  * Aplicación contenida en una imagen Docker basada en Python.
+  * El contenedor incluye Flask y las dependencias necesarias para ejecutar el modelo.
+  * Configurada para ejecutarse de forma autónoma y ser desplegada fácilmente en un VPS o plataforma cloud (DigitalOcean, AWS, Azure, GCP, etc.).
 
 ---
 
-## 6. Conclusión  
+## 3. Flujo de funcionamiento
 
-Este enfoque combina **IA + Django + Frontend web sencillo**, todo dentro de un contenedor Docker.  
-- Django cumple el rol de backend y servidor web.  
-- HTML + Bootstrap + JavaScript brindan la interfaz de usuario minimalista.  
-- Docker asegura que la aplicación sea portátil y fácil de desplegar en cualquier entorno de producción (VPS, cloud, etc.).  
+1. El usuario accede a la interfaz web (ruta `/`).
+2. Completa el formulario con los valores requeridos por el modelo.
+3. Al enviar, Flask recibe los datos vía `POST` y los procesa internamente.
+4. El modelo de IA realiza la predicción y Flask devuelve una página con el resultado.
+5. El resultado se muestra dinámicamente al usuario en la misma interfaz.
+
+---
+
+## 4. Dockerización
+
+El proyecto incluye:
+
+* Un **Dockerfile** que define la imagen de la aplicación Flask.
+* Un **requirements.txt** con las dependencias necesarias (Flask, NumPy, scikit-learn, etc.).
+* Un **docker-compose.yml** opcional para facilitar la construcción y ejecución del contenedor, mapeando los puertos y gestionando el entorno.
+
+**Ejemplo de ejecución:**
+
+```bash
+docker-compose up --build -d
+```
+
+Acceder luego a:
+
+```
+http://<IP_DEL_VPS>:5000/
+```
+
+---
+
+## 5. Despliegue en VPS
+
+1. Copiar el proyecto y el archivo del modelo (`model.pkl`) al servidor.
+2. Construir la imagen Docker con `docker-compose build`.
+3. Ejecutar el contenedor con `docker-compose up -d`.
+4. Acceder desde el navegador al puerto expuesto (por defecto `5000`).
+
+---
+
+## 6. Conclusión
+
+Este enfoque combina **IA + Flask + Frontend web sencillo**, todo dentro de un contenedor Docker.
+
+* Flask cumple el rol de **backend y servidor web**, manejando tanto la carga del modelo como las predicciones.
+* HTML + Bootstrap brindan una **interfaz ligera y funcional** para la interacción con el modelo.
+* Docker garantiza **portabilidad, consistencia y facilidad de despliegue** en cualquier entorno productivo.
