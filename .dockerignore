@@ -1,0 +1,31 @@
+# Ignore node_modules and build artifacts
+node_modules/
+dist/
+build/
+tmp/
+temp/
+.cache/
+*.log
+
+# Ignore OS generated files
+.DS_Store
+Thumbs.db
+
+# Ignore editor folders
+.vscode/
+.idea/
+
+# Ignore common mkdir or directory names
+test/
+tests/
+__pycache__/
+output/
+outputs/
+logs/
+data/
+.env
+.env.*
+
+# Ignore any file or folder named 'mkdir'
+mkdir
+mkdir/
