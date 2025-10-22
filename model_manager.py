@@ -11,6 +11,21 @@ load_dotenv()
 # Configuración del modelo
 MODEL_PATH = os.getenv('MODEL_PATH', 'bilstm.keras')
 
+# Configurar TensorFlow para usar MENOS memoria
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'  # Solo errores críticos
+os.environ['TF_FORCE_GPU_ALLOW_GROWTH'] = 'false'
+os.environ['CUDA_VISIBLE_DEVICES'] = ''  # Forzar CPU
+
+# Configuración más agresiva para CPU
+tf.config.threading.set_intra_op_parallelism_threads(1)
+tf.config.threading.set_inter_op_parallelism_threads(1)
+
+# Configurar para usar solo CPU
+try:
+    tf.config.set_visible_devices([], 'GPU')
+except:
+    pass
+
 class ModelManager:
     """Singleton para gestionar la carga del modelo de manera eficiente."""
     
@@ -31,7 +46,14 @@ class ModelManager:
                     raise FileNotFoundError(f"Archivo de modelo no encontrado: {MODEL_PATH}")
                 
                 logger.info(f"Cargando modelo desde {MODEL_PATH}...")
-                self._model = tf.keras.models.load_model(MODEL_PATH)
+                
+                # Cargar con configuración de memoria limitada
+                with tf.device('/CPU:0'):
+                    self._model = tf.keras.models.load_model(
+                        MODEL_PATH, 
+                        compile=False  # No recompilar para ahorrar memoria
+                    )
+                
                 self._model_loaded = True
                 logger.info("Modelo cargado exitosamente.")
                 
