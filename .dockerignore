@@ -25,6 +25,8 @@ logs/
 data/
 .env
 .env.*
+.venv/
+venv/
 
 # Ignore any file or folder named 'mkdir'
 mkdir
